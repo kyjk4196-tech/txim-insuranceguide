@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>이식면역사업부 보험급여기준</title>
+    <title>이식면역사업부 제품별 보험인정기준(2026)</title>
     <style>
         :root {
             --primary-color: #004098;
@@ -20,10 +20,10 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* 전체 스크롤 방지 */
         }
         
-        /* --- 헤더 영역 --- */
+        /* --- 헤더 --- */
         header {
             background-color: var(--primary-color);
             color: white;
@@ -36,23 +36,21 @@
             z-index: 100;
             flex-shrink: 0;
         }
-        h1 { margin: 0; font-size: 1.1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        h1 { margin: 0; font-size: 1.1rem; font-weight: 700; }
         .sub-text { font-size: 0.75rem; opacity: 0.8; }
         
-        /* 모바일 뒤로가기 버튼 */
         .back-btn {
-            display: none;
+            display: none; /* PC에서는 숨김 */
             background: none;
             border: none;
             color: white;
             font-size: 1.2rem;
-            font-weight: bold;
             cursor: pointer;
-            padding: 10px 15px 10px 0;
+            padding: 0 10px 0 0;
             margin-right: 5px;
         }
 
-        /* --- 메인 컨테이너 --- */
+        /* --- 레이아웃 컨테이너 --- */
         .container {
             display: flex;
             flex: 1;
@@ -68,9 +66,10 @@
             display: flex;
             flex-direction: column;
             z-index: 10;
+            flex-shrink: 0; /* 너비 고정 */
         }
         .search-area {
-            padding: 12px;
+            padding: 15px;
             background-color: #fff;
             border-bottom: 1px solid var(--border-color);
         }
@@ -86,7 +85,7 @@
         }
         .search-input:focus { 
             border-color: var(--primary-color); 
-            background-color: #fff;
+            background-color: #fff; 
         }
         
         .drug-list {
@@ -103,7 +102,7 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        .drug-item:active { background-color: #eef1f5; }
+        .drug-item:hover { background-color: #f8f9fa; }
         .drug-item.active {
             background-color: #e7f1ff;
             border-left: 5px solid var(--primary-color);
@@ -112,69 +111,78 @@
         .drug-name { font-weight: 700; color: #333; margin-bottom: 4px; display: block; font-size: 1.05rem; }
         .drug-code { font-size: 0.85rem; color: #666; display: block; }
 
-        /* --- 콘텐츠 (상세내용) --- */
+        /* --- 상세 내용 영역 --- */
         .content {
             flex: 1;
             background-color: white;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding: 20px 30px;
+            padding: 30px 40px;
+            box-sizing: border-box;
         }
         
+        /* 고시 내용 스타일 */
         .gosi-header {
             border-bottom: 2px solid #333;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
         }
-        .gosi-title { font-size: 1.5rem; color: var(--primary-color); margin: 0 0 10px 0; font-weight: 800; line-height: 1.3; }
-        .gosi-meta { color: #555; font-size: 0.9rem; background: #eee; display: inline-block; padding: 4px 8px; border-radius: 4px; margin-top: 5px; }
+        .gosi-title { font-size: 1.6rem; color: var(--primary-color); margin: 0 0 10px 0; font-weight: 800; line-height: 1.3; }
+        .gosi-meta { color: #555; font-size: 0.95rem; background: #eee; display: inline-block; padding: 4px 10px; border-radius: 4px; margin-top: 5px; }
         
-        .gosi-body { font-size: 1rem; line-height: 1.7; color: #333; padding-bottom: 60px; }
+        .gosi-body { font-size: 1rem; line-height: 1.7; color: #333; padding-bottom: 80px; }
         
-        /* 들여쓰기 및 스타일 클래스 */
-        .depth-0 { font-weight: bold; margin-top: 30px; margin-bottom: 12px; font-size: 1.1rem; color: #000; background-color: #f8f9fa; padding: 10px 12px; border-radius: 8px; border-left: 4px solid #004098; }
-        .depth-1 { padding-left: 10px; margin-bottom: 10px; font-weight: 600; color: #004098; }
+        .depth-0 { 
+            font-weight: bold; margin-top: 30px; margin-bottom: 15px; font-size: 1.1rem; color: #000; 
+            background-color: #f8f9fa; padding: 12px 15px; border-radius: 8px; border-left: 4px solid #004098; 
+        }
+        .depth-1 { padding-left: 10px; margin-bottom: 12px; font-weight: 600; color: #004098; font-size: 1.05rem; }
         .depth-2 { padding-left: 20px; margin-bottom: 8px; color: #444; font-size: 0.95rem; }
         .depth-3 { padding-left: 30px; margin-bottom: 6px; color: #555; font-size: 0.95rem; }
         .depth-4 { padding-left: 40px; margin-bottom: 6px; color: #666; font-size: 0.9rem; }
         .depth-etc { padding-left: 20px; margin-bottom: 10px; color: #555; font-size: 0.9rem; margin-top: 5px; font-style: italic; }
 
-        /* 추가 정보 박스 (개정사유, 근거 등) */
         .info-box {
             margin-top: 40px;
             padding: 20px;
-            background-color: #fff8f8;
-            border: 1px solid #ffc9c9;
+            background-color: #fffbfb;
+            border: 1px solid #ffdcdc;
             border-radius: 8px;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            color: #444;
         }
-        .info-title { font-weight: bold; color: #c92a2a; margin-bottom: 10px; font-size: 1rem; }
-        .ref-list { padding-left: 20px; margin: 0; color: #555; }
+        .info-title { font-weight: bold; color: #c92a2a; margin-bottom: 10px; font-size: 1rem; display:block; border-bottom: 1px dashed #ffc9c9; padding-bottom: 5px; }
+        .ref-list { padding-left: 20px; margin: 0; }
         .ref-list li { margin-bottom: 5px; }
 
         .pc-placeholder {
             text-align: center; color: #ccc; margin-top: 150px;
         }
 
-        /* =========================================
-           📱 모바일 반응형 (Max-width 768px)
-           ========================================= */
+        /* 📱 모바일 반응형 스타일 */
         @media (max-width: 768px) {
-            .container { display: block; }
+            .container { display: block; } /* Flex 해제 */
             .sidebar { width: 100%; height: 100%; border-right: none; }
+            
+            /* 상세화면: 평소엔 숨김(오른쪽으로 밀어둠) */
             .content {
                 position: fixed; top: var(--header-height); left: 0; width: 100%; height: calc(100% - var(--header-height));
-                background: white; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
-                box-sizing: border-box; padding: 20px; z-index: 20; display: none;
+                background: white; 
+                transform: translateX(100%); 
+                transition: transform 0.3s ease-in-out;
+                z-index: 20; 
+                padding: 20px;
+                display: none; /* 성능 최적화 */
             }
+            
+            /* 활성화 시 보임 */
             .content.active { display: block; transform: translateX(0); }
+            
+            /* 모바일에서만 뒤로가기 버튼 보임 (상세화면 활성 시) */
+            body.detail-active .back-btn { display: inline-block; }
+            
             .pc-placeholder { display: none; }
-            
-            /* 모바일에서 뒤로가기 버튼 표시 */
-            body.detail-view-active .back-btn { display: inline-block; }
-            
-            .gosi-title { font-size: 1.3rem; }
-            .depth-0 { font-size: 1rem; padding: 8px 10px; }
+            .gosi-title { font-size: 1.4rem; }
         }
     </style>
 </head>
@@ -183,80 +191,35 @@
 <header>
     <div style="display:flex; align-items:center;">
         <button class="back-btn" onclick="closeDetail()">←</button>
-        <h1 id="header-title">이식면역사업부 급여기준</h1>
+        <h1 id="header-title">이식면역사업부 제품별 보험인정기준(2026)</h1>
     </div>
-    <div class="sub-text">2025 Full Ver.</div>
+    <div class="sub-text">made by Yong Jung :)</div>
 </header>
 
 <div class="container">
     <div class="sidebar">
         <div class="search-area">
-            <input type="text" class="search-input" placeholder="성분명 검색 (예: 타크로벨)" onkeyup="filterList()">
+            <input type="text" class="search-input" placeholder="성분명, 제품명 검색 (예: 타크로벨)" onkeyup="filterList()">
         </div>
-        <ul class="drug-list" id="drugList"></ul>
+        <ul class="drug-list" id="drugList">
+            </ul>
     </div>
 
     <div class="content" id="detailView">
         <div class="pc-placeholder">
             <div style="font-size:4rem; margin-bottom:20px;">📄</div>
-            <p style="font-size:1.2rem; font-weight:bold;">목록에서 성분을 선택하세요.</p>
+            <p style="font-size:1.2rem; font-weight:bold;">좌측 목록에서 약제를 선택하세요.</p>
             <p>고시 원문 전체를 확인하실 수 있습니다.</p>
         </div>
     </div>
 </div>
 
 <script>
-    // 모든 데이터는 요약 없이 전체 원문(Full Text)으로 수록됨
+    // 데이터 (Syntax Error 방지를 위해 꼼꼼히 검수함)
     const insuranceData = [
         {
-            name: "Mycophenolate sodium",
-            subName: "마이폴틱장용정 등",
-            code: "고시 제2024-273호 (2025.1.1 시행)",
-            content: `
-                <div class="gosi-header">
-                    <h2 class="gosi-title">Mycophenolate sodium 경구제</h2>
-                    <div class="gosi-meta">고시 제2024-273호 (2025.1.1 시행) | [142] 자격요법제</div>
-                </div>
-                <div class="gosi-body">
-                    <div class="depth-0">1. 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
-                    
-                    <div class="depth-0">2. 허가사항 범위(효능·효과)를 초과하여 아래와 같은 경우에도 요양급여를 인정함.</div>
-                    <div class="depth-etc">- 아 래 -</div>
-                    
-                    <div class="depth-1">가. 신장, 소장 이식 후 Mycophenolate mofetil 경구제와 Tacrolimus 경구제의 병용치료로 위장관 부작용이 발생한 경우에 한하여 Tacrolimus 경구제와 병용투여를 인정함.</div>
-                    
-                    <div class="depth-1">나. 심장, 간장 이식 후 Mycophenolate mofetil 경구제와 Cyclosporine 경구제 또는 Tacrolimus 경구제의 병용치료로 위장관 부작용이 발생한 경우에 한하여 Cyclosporine 경구제 또는 Tacrolimus 경구제와 병용투여를 인정함.</div>
-                    
-                    <div class="depth-1">다. 루푸스신염: Mycophenolate mofetil 경구제 치료로 위장관 부작용이 발생한 경우에 한하여 투여를 인정함.</div>
-
-                    <div class="info-box">
-                        <div class="info-title">■ 고시 개정 사유</div>
-                        <p>○ 교과서, 가이드라인, 임상논문, 학회(전문가) 의견, 허가초과 비급여 사용 승인 내역 등을 참조하여, 루푸스신염에서 Mycophenolate mofetil 경구제 치료로 위장관 부작용이 발생한 경우에 한하여 급여 확대함.</p>
-                        
-                        <div class="info-title" style="margin-top:20px;">■ 관련근거 등</div>
-                        <ul class="ref-list">
-                            <li>DiPiro’s Pharmacotherapy: A Pathophysiologic Approach, 12e, 2023 > Chapter e66: Glomerular Diseases</li>
-                            <li>DiPiro’s Pharmacotherapy: A Pathophysiologic Approach, 12e, 2023 > Chapter 107: Systemic Lupus Erythematosus</li>
-                            <li>KDIGO 2021 Clinical Practice Guideline for the Management of Glomerular Diseases. Kidney Int. 2021 Oct;100(4S):S1-S276.</li>
-                            <li>2019 Update of the Joint European League Against Rheumatism and European Renal Association-European Dialysis and Transplant Association (EULAR/ERA-EDTA) recommendations for the management of lupus nephritis. Ann Rheum Dis. 2020 Jun;79(6):713-723.</li>
-                            <li>EULAR recommendations for the management of systemic lupus erythematosus: 2023 update. Ann Rheum Dis. 2023 Oct 12:ard-2023-224762.</li>
-                            <li>American College of Rheumatology. American College of Rheumatology guidelines for screening, treatment, and management of lupus nephritis. Arthritis Care Res (Hoboken). 2012 Jun;64(6):797-808.</li>
-                            <li>Mak SK, et al. Efficacy of enteric-coated mycophenolate sodium in patients with active lupus nephritis. Nephrology (Carlton). 2008 Jun;13(4):331-6.</li>
-                            <li>Traitanon O, et al. Efficacy of enteric-coated mycophenolate sodium in patients with resistant-type lupus nephritis: a prospective study. Lupus. 2008 Aug;17(8):744-51.</li>
-                            <li>Kitiyakara C, et al. Treatment of lupus nephritis and primary glomerulonephritis with enteric-coated mycophenolate sodium. Clin Nephrol. 2008 Feb;69(2):90-101.</li>
-                            <li>Anutrakulchai S, et al. A multicentre, randomised controlled study of enteric-coated mycophenolate sodium for the treatment of relapsed or resistant proliferative lupus nephritis: an Asian experience. Lupus Sci Med. 2016 Jan 14;3(1):e000120.</li>
-                            <li>Zeher M, et al. Efficacy and safety of enteric-coated mycophenolate sodium in combination with two glucocorticoid regimens for the treatment of active lupus nephritis. Lupus. 2011 Dec;20(14):1484-93.</li>
-                            <li>Liao YW, et al. Comparison of Renal Responses Between Continuous Mycophenolate Mofetil and Conversion from Mycophenolate Mofetil to Enteric-Coated Mycophenolate Sodium in Lupus Nephritis. J Clin Rheumatol. 2022 Mar 1;28(2):e633-e637.</li>
-                            <li>Singh S, et al. A retrospective analysis of clinical presentation of lupus nephritis. Am J Med Sci. 2011 Dec;342(6):467-73.</li>
-                            <li>Manger B, et al. Impact of switching from mycophenolate mofetil to enteric-coated mycophenolate sodium on gastrointestinal side effects in patients with autoimmune disease: a Phase III, open-label, single-arm, multicenter study. Clin Exp Gastroenterol. 2015 Jul 21;8:205-13.</li>
-                        </ul>
-                    </div>
-                </div>
-            `
-        },
-        {
             name: "Tacrolimus 제제",
-            subName: "타크로벨 캡슐, 정, 주",
+            subName: "타크로벨 캡슐, 정, 주 등",
             code: "고시 제2025-169호",
             content: `
                 <div class="gosi-header">
@@ -297,7 +260,7 @@
             content: `
                 <div class="gosi-header">
                     <h2 class="gosi-title">Cyclosporine 경구제</h2>
-                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제(비특이성 면역원제 포함)</div>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
                 </div>
                 <div class="gosi-body">
                     <div class="depth-0">1. 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
@@ -341,7 +304,7 @@
             content: `
                 <div class="gosi-header">
                     <h2 class="gosi-title">Cyclosporine 주사제</h2>
-                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제(비특이성 면역원제 포함)</div>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
                 </div>
                 <div class="gosi-body">
                     <div class="depth-0">1. 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
@@ -363,7 +326,7 @@
             content: `
                 <div class="gosi-header">
                     <h2 class="gosi-title">Mycophenolate mofetil 경구제</h2>
-                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제(비특이성 면역원제 포함)</div>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
                 </div>
                 <div class="gosi-body">
                     <div class="depth-0">1. 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
@@ -387,4 +350,252 @@
                     <div class="depth-3">가) 신증범위 단백뇨(＞3g/24h 또는 ＞3g/g)가 있는 경우</div>
                     <div class="depth-3">나) 최소 3개월동안 보존적인 치료에도 불구하고, 단백뇨가 1g/24h이상(또는 1g/g 이상)인 경우</div>
                     
-                    <div class="depth-1
+                    <div class="depth-1">마. 동종각막이식술:</div>
+                    <div class="depth-2">1) Cyclosporine에 부작용이 있거나, Cyclosporine을 투여할 수 없는 경우에 투여 시 요양급여를 인정함.</div>
+                    <div class="depth-2">2) 투여용량 및 투여기간은 1일 2g씩 6개월간 인정하며, 사례별로 1년까지 인정함.</div>
+                    
+                    <div class="depth-1">바. 포도막염</div>
+                    <div class="depth-2">1) 스테로이드제에 불응성이거나 부작용이 심한 경우</div>
+                    <div class="depth-2">2) 스테로이드제 감량 시 재발하는 경우</div>
+                    <div class="depth-2">3) 고용량 스테로이드제를 장기간 복용해야 하는 경우</div>
+                    <div class="depth-2">4) 전신질환을 동반하고 심각한 안구손상이 예상되는 경우 등</div>
+                    
+                    <div class="depth-1">사. 조혈모세포이식 후 이식편대숙주병</div>
+                    <div class="depth-2">1) 예방목적으로 투여 시</div>
+                    <div class="depth-3">가) 투여대상</div>
+                    <div class="depth-4">(1) 인체조직적합항원(HLA) 일치 동종조혈모세포이식 후 메토트렉세이트 투여의 금기증(허가사항의 주의사항 참고)이 있는 경우</div>
+                    <div class="depth-4">(2) 제대혈이식 시 일차요법</div>
+                    <div class="depth-3">나) 투여용량 및 기간: 15mg/kg을 1일 3회, 이식당일에서 이식 후 27일까지</div>
+                    <div class="depth-2">2) 치료목적으로 투여 시</div>
+                    <div class="depth-3">가) 투여대상: 스테로이드 저항성 또는 금기 환자</div>
+                    <div class="depth-3">나) 투여용량: 1g 또는 15mg/kg을 1일 2회</div>
+                    
+                    <div class="depth-1">아. 중증근무력증: Azathioprine 또는 스테로이드제에 치료효과가 없거나 부작용 등으로 투여할 수 없는 경우에 투여 시 요양급여를 인정함.</div>
+                    
+                    <div class="depth-1">자. 일차성 사구체신염(최소 변화의 신장증(Minimal change nephropathy), 국소분절사구체경화증(Focal segmental glomerulosclerosis), 막성신장증(Membranous nephropathy), 막증식성사구체신염(Membranoproliferative glomerulonephritis), 면역글로불린에이신장증(IgA nephropathy))에 의한 신증후군 환자로 스테로이드제에 효과가 없는 경우 또는 스테로이드 의존성으로 스테로이드제에 부작용이 심하거나 심각한 독성이 우려되는 경우</div>
+                    
+                    <div class="depth-1">차. 경구 스테로이드제 등 1차 약제에 불응성이거나 부작용이 심한 괴사성 공막염</div>
+                    
+                    <div class="depth-1">카. 피부경화가 진행된 미만성(Diffuse Cutaneous) 전신경화증</div>
+                    <div class="depth-2">1) 투여대상<br>1종 이상의 타 면역억제제(Azathioprine 등) 투여에도 불충분한 반응을 보이면서, mRSS(Modified Rodnan Skin Score) 12점 이상인 경우</div>
+                    <div class="depth-2">2) 투여용량: 250∼3000mg/day</div>
+                    
+                    <div class="depth-1">타. 시신경척수염 범주질환(Neuromyelitis optica spectrum disorder)으로 진단된 환자</div>
+                    
+                    <div class="depth-1">파. 만 2세 이상의 항 MOG 항체 연관 질환으로 진단된 환자</div>
+                    <div class="depth-2">1) 투여용량</div>
+                    <div class="depth-3">가) 소아(만 2세~만 18세): 600-1200mg/m2/d (최대 2g/d)</div>
+                    <div class="depth-3">나) 성인: 750mg-3g/day</div>
+                    <div class="depth-2">2) 투여기간 : 2년 동안 재발없이 임상적으로 안정화 된 후에, 단계적인 감량 후 중단</div>
+                    <div class="depth-2">※ 처음 3~6개월간은 저용량 스테로이드와 병용투여 함.</div>
+                    
+                    <div class="depth-1">하. 결체조직질환 연관 간질성 폐질환</div>
+                    <div class="depth-2">1) 투여대상<br>간질성 폐질환이 진행 중인 환자에서 1종 이상의 타 면역억제제(Azathioprine 등) 투여에도 불충분한 반응을 보이면서, ‘45% ≦ Forced Vital Capacity(FVC) < 80%’인 경우</div>
+                    <div class="depth-2">2) 투여용량: 250∼3000mg/day</div>
+                    
+                    <div class="depth-1">거. 다발성근염 또는 피부근염</div>
+
+                    <div class="depth-0">3. 허가사항 범위를 초과하여 아래와 같은 기준으로 투여하는 경우에는 약값 전액을 환자가 부담토록 함.</div>
+                    <div class="depth-etc">- 아    래 -</div>
+                    <div class="depth-1">○ 발 및 다리이식 수술 후 Tacrolimus 경구제와 병용한 경우</div>
+                    <div class="depth-2">1) Tacrolimus와 병용 투여되는 코르티코스테로이드의 경우는 환자 상태에 따라 추가 여부를 결정할 수 있음</div>
+                    <div class="depth-2">2) 투여 용량: 1회 750mg 이내, 1일 2회 투여</div>
+                    
+                    <div class="depth-0">4. 허가사항을 초과하여 혈우병A, B 항체 환자의 면역관용요법에 투여하고자 건강보험심사평가원의 사전승인을 받은 경우에도 요양급여를 인정함.</div>
+                    <div class="depth-etc">이 경우 사전승인을 위한 위원회 구성, 사전승인의 기준, 절차 및 방법 등 필요한 사항은 건강보험심사평가원장이 정함.</div>
+                </div>
+            `
+        },
+        {
+            name: "Mycophenolate sodium",
+            subName: "마이폴틱장용정 등",
+            code: "고시 제2024-273호 (2025.1.1 시행)",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Mycophenolate sodium 경구제</h2>
+                    <div class="gosi-meta">고시 제2024-273호 (2025.1.1 시행) | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
+                    
+                    <div class="depth-0">2. 허가사항 범위(효능·효과)를 초과하여 아래와 같은 경우에도 요양급여를 인정함.</div>
+                    <div class="depth-etc">- 아 래 -</div>
+                    
+                    <div class="depth-1">가. 신장, 소장 이식 후 Mycophenolate mofetil 경구제와 Tacrolimus 경구제의 병용치료로 위장관 부작용이 발생한 경우에 한하여 Tacrolimus 경구제와 병용투여를 인정함.</div>
+                    
+                    <div class="depth-1">나. 심장, 간장 이식 후 Mycophenolate mofetil 경구제와 Cyclosporine 경구제 또는 Tacrolimus 경구제의 병용치료로 위장관 부작용이 발생한 경우에 한하여 Cyclosporine 경구제 또는 Tacrolimus 경구제와 병용투여를 인정함.</div>
+                    
+                    <div class="depth-1">다. 루푸스신염: Mycophenolate mofetil 경구제 치료로 위장관 부작용이 발생한 경우에 한하여 투여를 인정함.</div>
+
+               </div>
+            `
+        },
+        {
+            name: "Everolimus 경구제",
+            subName: "써티로벨정 등",
+            code: "고시 제2023-101호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Everolimus 경구제</h2>
+                    <div class="gosi-meta">고시 제2023-101호 | [142] 자격요법제(비특이성면역억제제를포함)</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함.</div>
+                    <div class="depth-etc">- 아     래 -</div>
+                    
+                    <div class="depth-1">가. 심장이식</div>
+                    <div class="depth-2">1) 투여대상: 경도 내지 중등도의 면역학적 위험을 가진 동종 심장이식을 받은 성인 환자</div>
+                    <div class="depth-2">2) 투여방법: 마이크로에멀젼 제형의 사이클로스포린 및 코르티코스테로이드와 병용투여</div>
+                    
+                    <div class="depth-1">나. 간이식</div>
+                    <div class="depth-2">1) 투여대상: 간이식을 받은 성인 환자</div>
+                    <div class="depth-2">2) 투여방법: 타크로리무스 및 코르티코스테로이드와 병용투여</div>
+                    
+                    <div class="depth-1">다. 신이식</div>
+                    <div class="depth-2">1) 투여대상: 경도 내지 중등도의 면역학적 위험을 가진 동종 신장이식을 받은 성인 환자</div>
+                    <div class="depth-2">2) 투여 방법: 마이크로에멀젼 제형의 사이클로스포린 및 코르티코스테로이드와 병용투여</div>
+
+                    <div class="depth-0">2. 허가사항을 초과하여 신이식 및 심장이식 환자에 대하여 타크로리무스 및 코르티코스테로이드와 병용투여한 경우에도 요양급여를 인정함.</div>
+                </div>
+            `
+        },
+        {
+            name: "Sirolimus 경구제",
+            subName: "라파로벨정 등",
+            code: "고시 제2025-15호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Sirolimus 경구제</h2>
+                    <div class="gosi-meta">고시 제2025-15호 | [142] 자격료법제(비특이성 면역원제를 포함)</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함.</div>
+                    <div class="depth-etc">- 아    래 -</div>
+                    <div class="depth-1">가. 13세 이상 신장이식 환자에서의 장기 거부반응 예방</div>
+                    <div class="depth-1">나. 림프관평활근종증(Lymphangioleiomyomatosis)으로 진단받은 환자 중 FEV1 값이 예상 정상치의 70% 이하인 경우</div>
+
+                    <div class="depth-0">2. 허가사항 범위를 초과하여 아래와 같은 기준으로 투여 시 요양급여를 인정함.</div>
+                    <div class="depth-etc">- 아    래 -</div>
+                    <div class="depth-1">가. 소장이식</div>
+                    <div class="depth-2">1) 투여대상: 소장이식 후 3개월이 지난 환자로 Tacrolimus 투여로 신장기능이 저하되어 혈청 크레아티닌 1.5mg/dL 초과, 사구체여과율(GFR) 75mL/min 미만인 경우</div>
+                    <div class="depth-2">2) 투여방법: Tacrolimus와 병용투여</div>
+                    <div class="depth-2">3) 투여기간: 6개월 이내</div>
+                    <div class="depth-1">나. 신이식 환자에 대하여 타크로리무스 및 코르티코스테로이드와 병용투여한 경우</div>
+                    <div class="depth-1">다. 소아 폐정맥 협착증</div>
+                    <div class="depth-2">○ 투여대상: 의사의 의학적 판단에 따라 중등도 이상의 폐정맥 협착을 보이는 경우</div>
+                    <div class="depth-2">※ 동 약제 허가사항 중 사용상의 주의사항(소아에 대한 투여 등)을 고려하여 임상적 유용성이 위험성보다 높은 경우에 한하여 신중히 투여하도록 함.</div>
+                </div>
+            `
+        },
+        {
+            name: "Apremilast 경구제",
+            subName: "오테벨정 등",
+            code: "고시 제2025-88호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Apremilast 경구제</h2>
+                    <div class="gosi-meta">고시 제2025-88호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 각 약제별 허가사항 범위 내에서 아래와 같은 기준으로 투여 시 요양급여를 인정하며, 동 인정기준 이외에는 약값 전액을 환자가 부담토록 함.</div>
+                    <div class="depth-etc">- 아    래 -</div>
+                    
+                    <div class="depth-1">가. 활동성 및 진행성 건선성 관절염</div>
+                    <div class="depth-2">1) 투여대상<br>두 가지 종류 이상의 DMARDs로 총 6개월 이상(각 3개월 이상) 치료하였음에도 치료효과가 미흡하거나, 상기 약제들의 부작용 등으로 치료를 중단한 활동성 및 진행성 건선성 관절염 환자로서 다음 조건에 부합하는 경우</div>
+                    <div class="depth-etc">- 다    음 -</div>
+                    <div class="depth-3">○ 3개 이상의 압통 관절과 3개 이상의 부종 관절이 존재하여야 하며, 1개월 간격으로 2회 연속 측정한 결과이어야 함.</div>
+                    <div class="depth-2">2) 평가방법</div>
+                    <div class="depth-3">가) 동 약제를 16주간 사용 후 활성 관절수가 최초 투여시점 보다 30% 이상 감소된 경우 추가 6개월간의 사용을 인정함.</div>
+                    <div class="depth-3">나) 이후에는 6개월마다 평가를 하여 첫 6개월째의 평가결과가 유지되면 추가투여를 인정함.</div>
+                    
+                    <div class="depth-1">나. 건선</div>
+                    <div class="depth-2">1) 투여대상<br>6개월 이상 지속되는 만 18세 이상의 만성 중증 판상건선 환자로 가), 나), 다) 또는 가), 나), 라)를 충족하는 경우(단, 피부광화학요법(PUVA) 및 중파장자외선(UVB: Ultraviolet B)에 모두 금기인 환자는 가), 나), 다) 조건을 충족하는 경우)</div>
+                    <div class="depth-etc">- 다    음 -</div>
+                    <div class="depth-3">가) 판상건선이 전체 피부면적(Body surface area)의 10% 이상</div>
+                    <div class="depth-3">나) PASI(Psoriasis Area and Severity Index) 10 이상</div>
+                    <div class="depth-3">다) MTX(Methotrexate) 또는 Cyclosporine을 3개월 이상 투여※하였음에도 반응이 없거나 부작용 등으로 치료를 지속할 수 없는 경우</div>
+                    <div class="depth-3">라) 피부광화학요법(PUVA) 또는 중파장자외선(UVB) 치료법으로 3개월 이상 치료하였음에도 반응이 없거나 부작용 등으로 치료를 지속할 수 없는 경우</div>
+                    <div class="depth-3">※ Methotrexate 또는 Cyclosporine에 부작용이 예상*되거나 부작용이 발생하여 치료를 지속할 수 없는 만 18세 이상 성인 판상 건선에 DMF(Dimethyl fumarate)를 투여한 경우도 포함<br>* 임상적 근거 등을 바탕으로 의사의 의학적 판단에 따라 부작용이 예상됨이 진료기록부 등을 통해 확인되는 경우</div>
+                    <div class="depth-2">2) 평가방법</div>
+                    <div class="depth-3">가) 동 약제를 16주간 사용 후 평가하여 PASI가 75%이상 감소한 경우 추가 6개월의 투여를 인정함.</div>
+                    <div class="depth-3">나) 이후에는 지속적으로 6개월마다 평가하여 최초 평가결과가 유지되면 지속적인 투여를 인정함.</div>
+
+                    <div class="depth-0">2. 종양괴사인자알파저해제(TNF-α inhibitor: Etanercept, Adalimumab, Infliximab, Golimumab 주사제), Secukinumab, Ixekizumab, Ustekinumab, Guselkumab, Risankizumab, Bimekizumab 주사제, Deucravacitinib, Upadacitinib 경구제에 효과가 없거나 부작용으로 투약을 지속할 수 없는 경우(교체한 약제는 최소 6개월 투여를 유지하도록 권고함)에 동 약제로 교체투여(Switch)를 급여로 인정하며, 이 경우에는 교체투여에 대한 투여소견서를 첨부하여야 함.</div>
+                    
+                    <div class="depth-0">3. 생물학적제제와의 병용투여는 인정하지 아니함.</div>
+                    
+                    <div class="depth-0">4. 장기처방 시 1회 처방기간은 퇴원할 경우 및 외래의 경우에는 최대 30일분까지로 함.<br>다만, 최초 투약일로부터 24주 이후에 안정된 질병활동도를 보이고 부작용이 없는 환자의 경우 최대 60~90일분까지 인정함.</div>
+                </div>
+            `
+        }
+    ];
+
+    const drugListEl = document.getElementById('drugList');
+    const detailViewEl = document.getElementById('detailView');
+    const headerTitle = document.getElementById('header-title');
+
+    function renderList(items) {
+        drugListEl.innerHTML = '';
+        if (items.length === 0) {
+            drugListEl.innerHTML = '<li style="padding:20px; text-align:center; color:#999;">검색 결과가 없습니다.</li>';
+            return;
+        }
+
+        items.forEach((item) => {
+            const li = document.createElement('li');
+            li.className = 'drug-item';
+            li.innerHTML = `
+                <span class="drug-name">${item.name}</span>
+                <span class="drug-code">${item.subName}</span>
+            `;
+            li.onclick = () => showDetail(item, li);
+            drugListEl.appendChild(li);
+        });
+    }
+
+    function showDetail(item, element) {
+        // 1. 활성 클래스 처리
+        const allItems = document.querySelectorAll('.drug-item');
+        allItems.forEach(el => el.classList.remove('active'));
+        if(element) element.classList.add('active');
+
+        // 2. 내용 표시
+        detailViewEl.innerHTML = item.content;
+        detailViewEl.scrollTop = 0;
+
+        // 3. 모바일용 뷰 처리 (슬라이드 애니메이션)
+        if (window.innerWidth <= 768) {
+            detailViewEl.classList.add('active');
+            document.body.classList.add('detail-active');
+        }
+    }
+
+    // 모바일 뒤로가기
+    function closeDetail() {
+        const detailView = document.getElementById('detailView');
+        detailView.classList.remove('active');
+        document.body.classList.remove('detail-active');
+    }
+
+    function filterList() {
+        const keyword = document.querySelector('.search-input').value.toLowerCase();
+        const filtered = insuranceData.filter(item => 
+            item.name.toLowerCase().includes(keyword) || 
+            item.subName.toLowerCase().includes(keyword) ||
+            item.content.toLowerCase().includes(keyword)
+        );
+        renderList(filtered);
+    }
+
+    // 초기 실행
+    renderList(insuranceData);
+    
+    // PC에서는 첫 번째 항목 자동 선택
+    if(window.innerWidth > 768 && document.querySelectorAll('.drug-item').length > 0) {
+        showDetail(insuranceData[0], document.querySelector('.drug-item'));
+    }
+
+</script>
+
+</body>
+</html>
