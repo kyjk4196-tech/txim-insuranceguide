@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>이식면역사업부 보험급여기준</title>
+    <style>
+        :root {
+            --primary-color: #004098;
+            --bg-color: #f5f7fa;
+            --border-color: #e1e4e8;
+            --header-height: 60px;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            height: 100vh; /* 모바일 브라우저 높이 대응 */
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* 전체 스크롤 방지 */
+        }
+        
+        /* --- 헤더 영역 --- */
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            height: var(--header-height);
+            padding: 0 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 100;
+            flex-shrink: 0;
+        }
+        h1 { margin: 0; font-size: 1.1rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .sub-text { font-size: 0.75rem; opacity: 0.8; }
+        
+        /* 모바일용 뒤로가기 버튼 (평소엔 숨김) */
+        .back-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 10px 10px 10px 0;
+            margin-right: 5px;
+        }
+
+        /* --- 메인 컨테이너 --- */
+        .container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* --- 사이드바 (목록) --- */
+        .sidebar {
+            width: 350px;
+            background-color: white;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+        .search-area {
+            padding: 12px;
+            background-color: #fff;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            outline: none;
+            background-color: #f8f9fa;
+        }
+        .search-input:focus { 
+            border-color: var(--primary-color); 
+            background-color: #fff;
+        }
+        
+        .drug-list {
+            flex: 1;
+            overflow-y: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
+        }
+        .drug-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f1f1f1;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .drug-item:active { background-color: #eef1f5; }
+        .drug-item.active {
+            background-color: #e7f1ff;
+            border-left: 5px solid var(--primary-color);
+            padding-left: 15px;
+        }
+        .drug-name { font-weight: 700; color: #333; margin-bottom: 4px; display: block; font-size: 1rem; }
+        .drug-code { font-size: 0.85rem; color: #666; display: block; }
+
+        /* --- 콘텐츠 (상세내용) --- */
+        .content {
+            flex: 1;
+            background-color: white;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding: 20px 30px; /* PC 기본 패딩 */
+        }
+        
+        /* 고시 내용 스타일 */
+        .gosi-header {
+            border-bottom: 2px solid #333;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        .gosi-title { font-size: 1.5rem; color: var(--primary-color); margin: 0 0 10px 0; font-weight: 800; line-height: 1.3; }
+        .gosi-meta { color: #555; font-size: 0.9rem; background: #eee; display: inline-block; padding: 4px 8px; border-radius: 4px; }
+        
+        .gosi-body { font-size: 1rem; line-height: 1.6; color: #333; padding-bottom: 50px; }
+        
+        /* 들여쓰기 스타일 */
+        .depth-0 { font-weight: bold; margin-top: 25px; margin-bottom: 10px; font-size: 1.05rem; color: #000; background-color: #f8f9fa; padding: 8px 10px; border-radius: 6px; }
+        .depth-1 { padding-left: 10px; margin-bottom: 8px; font-weight: 600; }
+        .depth-2 { padding-left: 20px; margin-bottom: 8px; color: #444; font-size: 0.95rem; }
+        .depth-3 { padding-left: 30px; margin-bottom: 6px; color: #555; font-size: 0.9rem; }
+        .depth-4 { padding-left: 40px; margin-bottom: 6px; color: #666; font-size: 0.9rem; }
+        .depth-etc { padding-left: 20px; margin-bottom: 6px; color: #555; font-size: 0.9rem; margin-top: 10px; }
+
+        /* 안내 문구 (PC용) */
+        .pc-placeholder {
+            text-align: center; color: #ccc; margin-top: 100px;
+        }
+
+        /* =========================================
+           📱 모바일 반응형 스타일 (Max-width 768px)
+           ========================================= */
+        @media (max-width: 768px) {
+            .container {
+                display: block; /* Flex 해제 */
+            }
+            
+            /* 목록 화면 */
+            .sidebar {
+                width: 100%;
+                height: 100%;
+                border-right: none;
+            }
+
+            /* 상세 화면 (초기엔 숨김) */
+            .content {
+                position: fixed;
+                top: var(--header-height);
+                left: 0;
+                width: 100%;
+                height: calc(100% - var(--header-height));
+                background: white;
+                transform: translateX(100%); /* 오른쪽으로 숨겨둠 */
+                transition: transform 0.3s ease-in-out;
+                box-sizing: border-box;
+                padding: 20px; /* 모바일 패딩 축소 */
+                z-index: 20;
+                display: none; /* 성능 최적화 */
+            }
+
+            /* 활성화 시 화면에 표시 */
+            .content.active {
+                display: block;
+                transform: translateX(0);
+            }
+
+            /* 모바일에서 PC용 안내문구 숨김 */
+            .pc-placeholder { display: none; }
+
+            /* 뒤로가기 버튼 표시 */
+            body.detail-view-active .back-btn {
+                display: inline-block;
+            }
+            
+            /* 상세화면일 때 로고 숨기고 타이틀 변경 가능 (옵션) */
+            body.detail-view-active h1 {
+                font-size: 1rem;
+            }
+            
+            .gosi-title { font-size: 1.3rem; }
+            .depth-0 { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div style="display:flex; align-items:center;">
+        <button class="back-btn" onclick="closeDetail()">←</button>
+        <h1 id="header-title">이식면역사업부 급여기준</h1>
+    </div>
+    <div class="sub-text">Yong Jung :)</div>
+</header>
+
+<div class="container">
+    <div class="sidebar">
+        <div class="search-area">
+            <input type="text" class="search-input" placeholder="성분명 검색 (예: 타크로리무스)" onkeyup="filterList()">
+        </div>
+        <ul class="drug-list" id="drugList">
+            </ul>
+    </div>
+
+    <div class="content" id="detailView">
+        <div class="pc-placeholder">
+            <div style="font-size:3rem; margin-bottom:15px;">👈</div>
+            <p>목록에서 성분을 선택하세요.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 데이터 (기존 데이터 유지)
+    const insuranceData = [
+        {
+            name: "Tacrolimus 제제",
+            subName: "타크로벨 캡슐, 정, 주",
+            code: "고시 제2025-169호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Tacrolimus 제제</h2>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 각 약제별 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
+                    
+                    <div class="depth-0">2. 주사제를 조혈모세포이식 환자 / 경구제를 류마티스 관절염에 사용할 경우</div>
+                    <div class="depth-etc">- 아    래 -</div>
+                    
+                    <div class="depth-1">가. 주사제를 조혈모세포이식 환자에 사용할 경우</div>
+                    <div class="depth-2">1) 비혈연간 동종 조혈모세포이식 환자<br>: 이식 1일 전 ~ 이식 후 20일 (총 22일) 인정. 이후 GVHD 악화 없으면 경구제 전환.</div>
+                    <div class="depth-2">2) 타 약제 치료불응성(Refractory) 또는 부작용 심한 환자<br>: 경구 투여 불가능 시 인정.</div>
+                    <div class="depth-2">3) 경구투여 중 주사제 전환: "주사제 지급원칙"에 따라 타당한 경우 인정.</div>
+                    
+                    <div class="depth-1">나. 경구제를 만성 류마티스성 관절염에 사용할 경우</div>
+                    <div class="depth-2">: DMARDs 6개월 이상 치료 실패한 중증(Refractory) 환자에 인정.</div>
+
+                    <div class="depth-0">3. 허가사항 범위 초과 인정 (요양급여)</div>
+                    <div class="depth-1">가. 췌장, 폐, 심장, 소장, 손 및 팔 이식</div>
+                    <div class="depth-1">나. 중증근무력증 (Azathioprine/Steroid 실패 시)</div>
+                    <div class="depth-1">다. 소아 난치성 신증후군 (Steroid 의존/저항성 & CsA 부작용)</div>
+                    <div class="depth-1">라. 다발성근염 또는 피부근염</div>
+
+                    <div class="depth-0">4. 허가사항 범위 초과 (전액 본인부담)</div>
+                    <div class="depth-1">○ 발 및 다리이식의 경우</div>
+                </div>
+            `
+        },
+        {
+            name: "Cyclosporine 경구제",
+            subName: "사이폴엔연질캅셀",
+            code: "고시 제2025-169호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Cyclosporine 경구제</h2>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내 투여 시 요양급여 원칙.</div>
+                    
+                    <div class="depth-0">2. 허가사항 내 특정 질환 제한적 급여 (이외 전액본인부담)</div>
+                    <div class="depth-1">가. 건선 (기존 치료제 실패 중증)</div>
+                    <div class="depth-1">나. 신증후군 (Steroid 내성/의존성/부작용)</div>
+                    <div class="depth-1">다. 류마티스성관절염 (6개월 이상 치료 실패 중증)</div>
+                    <div class="depth-1">라. 재생불량성빈혈 (이식 불가 중증, 단독/병용)</div>
+
+                    <div class="depth-0">3. 허가사항 초과 인정 (요양급여)</div>
+                    <div class="depth-1">가. 아토피성 피부염 (불응성 중증, 2차)</div>
+                    <div class="depth-1">나. 중증근무력증 (Steroid/Azathioprine 실패)</div>
+                    <div class="depth-1">다. 천포창/유사천포창 (병용요법 실패)</div>
+                    <div class="depth-1">라. 베체트질환 (심한 안증상 등)</div>
+                    <div class="depth-1">마. 루푸스 (신증후군/빈혈 동반)</div>
+                    <div class="depth-1">바. 괴저성농피증</div>
+                    <div class="depth-1">사. 전두부/범발성 탈모증 (Steroid 부작용/불응)</div>
+                    <div class="depth-1">아. 만성특발성두드러기 (불응성 자가면역항체+)</div>
+                    <div class="depth-1">자~너. 기타(안와염, 간염, 공막염, 혈구탐식증, 포도막염, MDS, 간질성폐렴, 소장이식 등)</div>
+                    <div class="depth-1">더. 다발성근염 또는 피부근염</div>
+
+                    <div class="depth-0">4. 혈우병 항체 환자 면역관용요법 (사전승인 필요)</div>
+                </div>
+            `
+        },
+        {
+            name: "Cyclosporine 주사제",
+            subName: "사이폴주",
+            code: "고시 제2025-169호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Cyclosporine 주사제</h2>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내 투여 시 요양급여 원칙.</div>
+                    
+                    <div class="depth-0">2. 허가사항 초과 인정 (요양급여)</div>
+                    <div class="depth-1">가. 급성간질성폐렴 (고용량 스테로이드 불응)</div>
+                    <div class="depth-1">나. 다발성근염 또는 피부근염</div>
+
+                    <div class="depth-0">3. 혈우병 항체 환자 면역관용요법 (사전승인 필요)</div>
+                </div>
+            `
+        },
+        {
+            name: "Mycophenolate mofetil",
+            subName: "마이렙트 캡슐, 정",
+            code: "고시 제2025-169호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Mycophenolate mofetil</h2>
+                    <div class="gosi-meta">고시 제2025-169호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내 투여 시 요양급여 원칙.</div>
+
+                    <div class="depth-0">2. 허가사항 초과 인정 (요양급여)</div>
+                    <div class="depth-1">가. 천포창 (병합요법 불응)</div>
+                    <div class="depth-1">나. 장기이식(신/심/간/췌/폐/소장) 후 Tacrolimus 병용</div>
+                    <div class="depth-1">다. 손/팔이식 후 Tacrolimus 병용 (1회 750mg, 1일 2회)</div>
+                    <div class="depth-1">라. 루푸스신염 (WHO Class III, IV, V)</div>
+                    <div class="depth-1">마. 동종각막이식술 (CsA 불가 시)</div>
+                    <div class="depth-1">바. 포도막염 (Steroid 불응/부작용/재발 등)</div>
+                    <div class="depth-1">사. 조혈모세포이식 후 이식편대숙주병 (예방/치료)</div>
+                    <div class="depth-1">아. 중증근무력증 (Azathioprine/Steroid 실패)</div>
+                    <div class="depth-1">자. 일차성 사구체신염 (Steroid 불응/부작용 신증후군)</div>
+                    <div class="depth-1">차. 괴사성 공막염 (1차 약제 불응)</div>
+                    <div class="depth-1">카. 전신경화증 (미만성, mRSS 12↑)</div>
+                    <div class="depth-1">타. 시신경척수염 범주질환</div>
+                    <div class="depth-1">파. 항 MOG 항체 연관 질환 (만 2세 이상)</div>
+                    <div class="depth-1">하. 결체조직질환 연관 간질성 폐질환</div>
+                    <div class="depth-1">거. 다발성근염 또는 피부근염</div>
+
+                    <div class="depth-0">3. 허가초과 전액 본인부담</div>
+                    <div class="depth-1">○ 발 및 다리이식 (Tacrolimus 병용)</div>
+                    
+                    <div class="depth-0">4. 혈우병 항체 환자 면역관용요법 (사전승인)</div>
+                </div>
+            `
+        },
+        {
+            name: "Mycophenolate sodium",
+            subName: "마이렙틱엔 장용정",
+            code: "고시 제2024-273호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Mycophenolate sodium</h2>
+                    <div class="gosi-meta">고시 제2024-273호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내에서 투여 시 요양급여 함을 원칙으로 함.</div>
+                </div>
+            `
+        },
+        {
+            name: "Everolimus 경구제",
+            subName: "써티로벨정",
+            code: "고시 제2023-101호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Everolimus 경구제</h2>
+                    <div class="gosi-meta">고시 제2023-101호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내 인정 (이외 전액 본인부담)</div>
+                    <div class="depth-1">가. 심장이식 (경도~중등도 위험, CsA 병용)</div>
+                    <div class="depth-1">나. 간이식 (Tacrolimus 병용)</div>
+                    <div class="depth-1">다. 신이식 (경도~중등도 위험, CsA 병용)</div>
+
+                    <div class="depth-0">2. 허가초과 인정 (요양급여)</div>
+                    <div class="depth-1">○ 신이식 및 심장이식 환자에서 Tacrolimus 병용 시</div>
+                </div>
+            `
+        },
+        {
+            name: "Sirolimus 경구제",
+            subName: "라파로벨정",
+            code: "고시 제2025-15호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Sirolimus 경구제</h2>
+                    <div class="gosi-meta">고시 제2025-15호 | [142] 자격료법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내 인정 (이외 전액 본인부담)</div>
+                    <div class="depth-1">가. 13세 이상 신장이식 환자</div>
+                    <div class="depth-1">나. 림프관평활근종증 (FEV1 70% 이하)</div>
+
+                    <div class="depth-0">2. 허가초과 인정 (요양급여)</div>
+                    <div class="depth-1">가. 소장이식 (이식 3개월 후 신독성 발생 시)</div>
+                    <div class="depth-1">나. 신이식 (Tacrolimus 병용 시)</div>
+                    <div class="depth-1">다. 소아 폐정맥 협착증</div>
+                </div>
+            `
+        },
+        {
+            name: "Apremilast 경구제",
+            subName: "오테벨정",
+            code: "고시 제2025-88호",
+            content: `
+                <div class="gosi-header">
+                    <h2 class="gosi-title">Apremilast 경구제</h2>
+                    <div class="gosi-meta">고시 제2025-88호 | [142] 자격요법제</div>
+                </div>
+                <div class="gosi-body">
+                    <div class="depth-0">1. 허가사항 범위 내 인정 (이외 전액 본인부담)</div>
+                    <div class="depth-1">가. 활동성 및 진행성 건선성 관절염</div>
+                    <div class="depth-2">- 2종류 이상 DMARDs 6개월 실패 + 관절 3개 이상<br>- 16주 후 30% 감소 시 유지</div>
+                    <div class="depth-1">나. 건선 (만성 중증 판상건선)</div>
+                    <div class="depth-2">- BSA 10%↑, PASI 10↑, MTX/CsA 실패, 광선치료 실패<br>- 16주 후 PASI 75% 감소 시 유지</div>
+
+                    <div class="depth-0">2. 생물학적제제 실패 후 교체투여 인정</div>
+                    <div class="depth-0">3. 생물학적제제와 병용 불가</div>
+                    <div class="depth-0">4. 처방기간: 최대 30일 (안정 시 60~90일)</div>
+                </div>
+            `
+        }
+    ];
+
+    const drugListEl = document.getElementById('drugList');
+    const detailViewEl = document.getElementById('detailView');
+    const headerTitle = document.getElementById('header-title');
+
+    function renderList(items) {
+        drugListEl.innerHTML = '';
+        if (items.length === 0) {
+            drugListEl.innerHTML = '<li style="padding:20px; text-align:center; color:#999;">검색 결과가 없습니다.</li>';
+            return;
+        }
+
+        items.forEach((item) => {
+            const li = document.createElement('li');
+            li.className = 'drug-item';
+            li.innerHTML = `
+                <span class="drug-name">${item.name}</span>
+                <span class="drug-code">${item.subName}</span>
+            `;
+            li.onclick = () => showDetail(item, li);
+            drugListEl.appendChild(li);
+        });
+    }
+
+    function showDetail(item, element) {
+        // 1. 활성 클래스 처리
+        const allItems = document.querySelectorAll('.drug-item');
+        allItems.forEach(el => el.classList.remove('active'));
+        if(element) element.classList.add('active');
+
+        // 2. 내용 표시
+        detailViewEl.innerHTML = item.content;
+        detailViewEl.scrollTop = 0;
+
+        // 3. 모바일용 뷰 처리 (슬라이드 애니메이션)
+        if (window.innerWidth <= 768) {
+            detailViewEl.classList.add('active'); // CSS transform 작동
+            document.body.classList.add('detail-view-active'); // 헤더 등 상태 변경용
+            // 헤더 제목 변경 (선택사항)
+            // headerTitle.innerText = item.name;
+        }
+    }
+
+    // 모바일 뒤로가기
+    function closeDetail() {
+        const detailView = document.getElementById('detailView');
+        detailView.classList.remove('active');
+        document.body.classList.remove('detail-view-active');
+        // headerTitle.innerText = "이식면역사업부 급여기준"; // 원래 제목 복구
+    }
+
+    function filterList() {
+        const keyword = document.querySelector('.search-input').value.toLowerCase();
+        const filtered = insuranceData.filter(item => 
+            item.name.toLowerCase().includes(keyword) || 
+            item.subName.toLowerCase().includes(keyword) ||
+            item.content.toLowerCase().includes(keyword)
+        );
+        renderList(filtered);
+    }
+
+    // 초기 실행
+    renderList(insuranceData);
+    
+    // PC에서는 첫 번째 항목 자동 선택
+    if(window.innerWidth > 768 && document.querySelectorAll('.drug-item').length > 0) {
+        showDetail(insuranceData[0], document.querySelector('.drug-item'));
+    }
+
+</script>
+
+</body>
+</html>
